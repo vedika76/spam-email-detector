@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Detector</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+        * {
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+        }
+
+        /* Light mode (default) */
+        :root {
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-primary: #1f2937;
+            --border: #d1d5db;
+            --button-bg: #f97316;
+            --button-hover: #ea580c;
+            --spam-bg: #fee2e2;
+            --spam-text: #991b1b;
+            --ham-bg: #dcfce7;
+            --ham-text: #166534;
+            --textarea-bg: #ffffff;
+        }
+
+        /* Dark mode */
+        body.dark {
+            --bg-body: #111827;
+            --bg-card: #1f2937;
+            --text-primary: #f9fafb;
+            --border: #374151;
+            --button-bg: #f97316;
+            --button-hover: #ea580c;
+            --spam-bg: #2d1a1a;
+            --spam-text: #f87171;
+            --ham-bg: #1a3324;
+            --ham-text: #6ee7b7;
+            --textarea-bg: #374151;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            font-family: 'Inter', monospace;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--textarea-bg);
+            color: var(--text-primary);
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            background-color: var(--button-bg);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        .result {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .spam {
+            background-color: var(--spam-bg);
+            color: var(--spam-text);
+        }
+
+        .ham {
+            background-color: var(--ham-bg);
+            color: var(--ham-text);
+        }
+
+        /* Dark mode toggle button - small, clean */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: auto;
+            padding: 8px 16px;
+            margin: 0;
+            background: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-mode-toggle:hover {
+            background: var(--button-hover);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Dark mode toggle button -->
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+
+    <h1>Spam Email Detector</h1>
+
+    <div class="card">
+        <form method="POST">
+            <textarea name="message" rows="5" placeholder="Enter your message here...">{{ message or '' }}</textarea>
+            <button type="submit">Check Message</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result {{ 'spam' if prediction == 'SPAM' else 'ham' }}">
+            Prediction: {{ prediction }}<br>
+            Confidence: {{ confidence }}%
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            const body = document.body;
+            const btn = document.querySelector('.dark-mode-toggle');
+            body.classList.toggle('dark');
+            
+            if (body.classList.contains('dark')) {
+                btn.innerHTML = '☀️ Light Mode';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                btn.innerHTML = '🌙 Dark Mode';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        // Load saved preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark');
+            document.querySelector('.dark-mode-toggle').innerHTML = '☀️ Light Mode';
+        }
+    </script>
+</body>
+</html>
